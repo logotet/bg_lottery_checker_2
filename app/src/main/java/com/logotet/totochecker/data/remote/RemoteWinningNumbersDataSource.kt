@@ -21,10 +21,10 @@ class RemoteWinningNumbersDataSource(
     override suspend fun getWinningNumbers42(): List<String> =
         getAllWinningNumbers().mapWiningNumbersByType(SIX_42)
 
-    override suspend fun getWinningNumbers35First(): List<String> =
+    override suspend fun getWinningNumbers35FirstPick(): List<String> =
         getAllWinningNumbers().mapWiningNumbersByType(FIVE_35_FIRST)
 
-    override suspend fun getWinningNumbers35Second(): List<String> =
+    override suspend fun getWinningNumbers35SecondPick(): List<String> =
         getAllWinningNumbers().mapWiningNumbersByType(FIVE_35_SECOND)
 
     private fun List<String>.mapWiningNumbersByType(

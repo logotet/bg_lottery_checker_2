@@ -5,7 +5,7 @@ interface WinningNumbersDataSource {
 
     suspend fun getWinningNumbers42(): List<String>
 
-    suspend fun getWinningNumbers35First(): List<String>
+    suspend fun getWinningNumbers35FirstPick(): List<String>
 
-    suspend fun getWinningNumbers35Second(): List<String>
+    suspend fun getWinningNumbers35SecondPick(): List<String>
 }
