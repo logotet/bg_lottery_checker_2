@@ -13,8 +13,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.logotet.totochecker.R
 
 @Composable
 fun BallList(
@@ -26,7 +28,9 @@ fun BallList(
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.padding(16.dp).fillMaxWidth()
+        modifier = modifier
+            .padding(16.dp)
+            .fillMaxWidth()
     ) {
 
         Text(
@@ -53,4 +57,13 @@ fun BallList(
             }
         }
     }
+}
+
+@Preview(showSystemUi = true)
+@Composable
+fun BallsListPreview() {
+    BallList(
+        numbers = listOf("1", "2", "3", "4", "5", "6"),
+        listHeader = R.string.header_49
+    )
 }

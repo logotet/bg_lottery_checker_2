@@ -7,6 +7,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.logotet.totochecker.R
 import com.logotet.totochecker.presentation.ui.composables.BallList
@@ -15,7 +16,7 @@ import com.logotet.totochecker.presentation.ui.composables.BallList
 fun MainScreen(
     viewModel: MainViewModel = hiltViewModel()
 ) {
-    var state = viewModel.screenState
+    val state = viewModel.screenState
 
     MainScreenContent(state = state)
 }
@@ -55,4 +56,16 @@ fun MainScreenContent(state: MainUIState, modifier: Modifier = Modifier) {
             CircularProgressIndicator()
         }
     }
+}
+
+@Preview(showSystemUi = true)
+@Composable
+fun MainScreenPreview(){
+    MainScreenContent(state =  MainUIState(
+        numbers49 = listOf("1", "2", "3", "4", "5", "6"),
+        numbers42 = listOf("1", "2", "3", "4", "5", "6"),
+        numbers35FirstPick = listOf("1", "2", "3", "4", "5"),
+        numbers35SecondPick = listOf("1", "2", "3", "4", "5"),
+        isDataLoading = false
+    ))
 }
