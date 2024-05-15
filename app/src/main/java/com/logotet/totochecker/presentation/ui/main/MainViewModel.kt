@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.logotet.totochecker.data.remote.RemoteWinningNumbersDataSource
+import com.logotet.totochecker.domain.data.DataResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -15,7 +16,7 @@ class MainViewModel @Inject constructor(
     remoteWinningNumbersDataSource: RemoteWinningNumbersDataSource
 ) : ViewModel() {
 
-    var screenState by mutableStateOf(MainUIState(isDataLoading = true))
+    var screenState by mutableStateOf(MainUIState())
 
     init {
         loadAllWinningCombinations(remoteWinningNumbersDataSource)
@@ -62,9 +63,17 @@ data class MainUIState(
     val numbers42: List<String> = emptyList(),
     val numbers35FirstPick: List<String> = emptyList(),
     val numbers35SecondPick: List<String> = emptyList(),
-    val isDataLoading: Boolean = false
+    val isDataLoading: Boolean = false,
+    val dataState: DataState = DataState.Loading
 )
 
-sealed class Action() {
+sealed class DataState {
+    data object Success: DataState()
+    data object Loading: DataState()
+    data object ErrorPrompt: DataState()
+    data object ErrorFinal: DataState()
+}
+
+sealed class Action {
     data object OnNumbersCheck : Action()
 }
