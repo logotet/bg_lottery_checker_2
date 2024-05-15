@@ -16,9 +16,10 @@ class RemoteWinningNumbersDataSource(
     private var allWinningNumbers: List<String> = emptyList()
 
     private suspend fun getAllWinningNumbers(): DataResult<List<String>> {
-        val result = jsoupClient.getElements()
 
         return if (allWinningNumbers.isEmpty()) {
+            val result = jsoupClient.getElements()
+
             result.mapResult { elements ->
                 allWinningNumbers = elements.map { element ->
                     element.text()

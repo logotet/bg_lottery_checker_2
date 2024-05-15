@@ -41,7 +41,7 @@ class MainViewModel @Inject constructor(
                         numbers42 = winningNumbers42Result.data,
                         numbers35FirstPick = winningNumbers35FirstPickResult.data,
                         numbers35SecondPick = winningNumbers35SecondPickResult.data,
-                        isDataLoading = false
+                        dataState = DataState.Success
                     )
                 } else {
                     screenState = MainUIState(dataState = DataState.ErrorPrompt)
@@ -68,7 +68,6 @@ data class MainUIState(
     val numbers42: List<String> = emptyList(),
     val numbers35FirstPick: List<String> = emptyList(),
     val numbers35SecondPick: List<String> = emptyList(),
-    val isDataLoading: Boolean = false,
     val dataState: DataState = DataState.Loading
 )
 

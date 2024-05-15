@@ -102,7 +102,6 @@ fun MainScreenPreview() {
             numbers42 = listOf("1", "2", "3", "4", "5", "6"),
             numbers35FirstPick = listOf("1", "2", "3", "4", "5"),
             numbers35SecondPick = listOf("1", "2", "3", "4", "5"),
-            isDataLoading = false
         ),
         backgroundColor = Color.White,
         onAction = {}
