@@ -1,5 +1,7 @@
 package com.logotet.totochecker.data.remote
 
+import com.logotet.totochecker.domain.data.DataResult
+import com.logotet.totochecker.domain.data.handleApiCall
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
@@ -11,12 +13,10 @@ class JsoupClient {
             Jsoup.connect(BASE_URL).get()
         }
 
-    suspend fun getElements(): Elements? =
-        try {
+    suspend fun getElements(): DataResult<Elements> =
+        handleApiCall {
             val document = getDocument()
             document.getElementsByClass(ELEMENT_SIGNATURE)
-        } catch (e: Exception) {
-            null
         }
 
     companion object {
