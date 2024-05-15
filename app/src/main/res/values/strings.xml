@@ -5,4 +5,9 @@
     <string name="header_35">5 / 35</string>
     <string name="header_pick_first">Първо теглене</string>
     <string name="header_pick_second">Второ теглене</string>
+
+    // Main screen
+    <string name="dialog_general_error">Something went wrong</string>
+    <string name="data_error_message">Data could not be loaded</string>
+    <string name="dialog_confirm_button">OK</string>
 </resources>
