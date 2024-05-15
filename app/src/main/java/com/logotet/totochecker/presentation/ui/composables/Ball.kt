@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -40,7 +41,7 @@ fun Ball(
             style = TextStyle(
                 fontWeight = FontWeight.Bold
             ), modifier = Modifier
-                .align(Alignment.Center)
+                .align(BiasAlignment(verticalBias = 0f, horizontalBias = 0.2f))
                 .padding(16.dp)
         )
     }
