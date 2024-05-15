@@ -5,9 +5,16 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.NavHost
@@ -22,6 +29,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -32,7 +40,13 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    var appBarTitle by remember {
+                        mutableStateOf(Route.Home.label)
+                    }
                     Scaffold(
+                        topBar = {
+                            TopAppBar(title = { Text(text = appBarTitle) })
+                        },
                         bottomBar = {
                             BottomAppBar(navController = navController)
                         }
@@ -43,19 +57,21 @@ class MainActivity : ComponentActivity() {
                             startDestination = Route.Home.route
                         ) {
                             composable(Route.Home.route) {
+                                appBarTitle = Route.Home.label
                                 MainScreen()
                             }
 
                             composable(Route.Check.route) {
+                                appBarTitle = Route.Check.label
                                 MainScreen(backgroundColor = Color.Gray)
                             }
 
                             composable(Route.MyNumbers.route) {
+                                appBarTitle = Route.MyNumbers.label
                                 MainScreen(backgroundColor = Color.Yellow)
                             }
                         }
                     }
-
                 }
             }
         }
