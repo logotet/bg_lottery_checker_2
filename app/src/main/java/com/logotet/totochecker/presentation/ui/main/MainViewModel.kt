@@ -52,8 +52,13 @@ class MainViewModel @Inject constructor(
 
     fun onAction(action: Action) {
         when (action) {
+            is Action.OnDismissDialog -> {
+                screenState = screenState.copy(
+                    dataState = DataState.ErrorFinal
+                )
+            }
+
             is Action.OnNumbersCheck -> Unit
-            else -> Unit
         }
     }
 }
@@ -76,4 +81,5 @@ sealed class DataState {
 
 sealed class Action {
     data object OnNumbersCheck : Action()
+    data object OnDismissDialog : Action()
 }
