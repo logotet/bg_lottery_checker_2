@@ -24,18 +24,27 @@ class MainViewModel @Inject constructor(
     private fun loadAllWinningCombinations(remoteWinningNumbersDataSource: RemoteWinningNumbersDataSource) {
         viewModelScope.launch {
             remoteWinningNumbersDataSource.apply {
-                val winningNumbers49 = getWinningNumbers49()
-                val winningNumbers42 = getWinningNumbers42()
-                val winningNumbers35FirstPick = getWinningNumbers35FirstPick()
-                val winningNumbers35SecondPick = getWinningNumbers35SecondPick()
+                val winningNumbers49Result = getWinningNumbers49()
+                val winningNumbers42Result = getWinningNumbers42()
+                val winningNumbers35FirstPickResult = getWinningNumbers35FirstPick()
+                val winningNumbers35SecondPickResult = getWinningNumbers35SecondPick()
 
-                screenState = MainUIState(
-                    numbers49 = winningNumbers49,
-                    numbers42 = winningNumbers42,
-                    numbers35FirstPick = winningNumbers35FirstPick,
-                    numbers35SecondPick = winningNumbers35SecondPick,
-                    isDataLoading = false
-                )
+                if (
+                    winningNumbers49Result is DataResult.Success &&
+                    winningNumbers42Result is DataResult.Success &&
+                    winningNumbers35FirstPickResult is DataResult.Success &&
+                    winningNumbers35SecondPickResult is DataResult.Success
+                ) {
+                    screenState = MainUIState(
+                        numbers49 = winningNumbers49Result.data,
+                        numbers42 = winningNumbers42Result.data,
+                        numbers35FirstPick = winningNumbers35FirstPickResult.data,
+                        numbers35SecondPick = winningNumbers35SecondPickResult.data,
+                        isDataLoading = false
+                    )
+                } else {
+                    screenState = MainUIState(dataState = DataState.ErrorPrompt)
+                }
             }
         }
     }

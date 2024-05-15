@@ -4,37 +4,56 @@ import com.logotet.totochecker.data.remote.LotteryType.FIVE_35_FIRST
 import com.logotet.totochecker.data.remote.LotteryType.FIVE_35_SECOND
 import com.logotet.totochecker.data.remote.LotteryType.SIX_42
 import com.logotet.totochecker.data.remote.LotteryType.SIX_49
+import com.logotet.totochecker.domain.data.DataResult
+import com.logotet.totochecker.domain.data.DataResult.Success
 import com.logotet.totochecker.domain.data.WinningNumbersDataSource
+import com.logotet.totochecker.domain.data.mapResult
 
 class RemoteWinningNumbersDataSource(
     private val jsoupClient: JsoupClient
 ) : WinningNumbersDataSource {
 
-    private suspend fun getAllWinningNumbers(): List<String> =
-        jsoupClient.getElements()?.map { element ->
-            element.text()
-        } ?: emptyList()
+    private var allWinningNumbers: List<String> = emptyList()
 
-    override suspend fun getWinningNumbers49(): List<String> =
+    private suspend fun getAllWinningNumbers(): DataResult<List<String>> {
+        val result = jsoupClient.getElements()
+
+        return if (allWinningNumbers.isEmpty()) {
+            result.mapResult { elements ->
+                allWinningNumbers = elements.map { element ->
+                    element.text()
+                }
+
+                allWinningNumbers
+            }
+        } else {
+            Success(allWinningNumbers)
+        }
+    }
+
+    override suspend fun getWinningNumbers49(): DataResult<List<String>> =
         getAllWinningNumbers().mapWiningNumbersByType(SIX_49)
 
-    override suspend fun getWinningNumbers42(): List<String> =
+    override suspend fun getWinningNumbers42(): DataResult<List<String>> =
         getAllWinningNumbers().mapWiningNumbersByType(SIX_42)
 
-    override suspend fun getWinningNumbers35FirstPick(): List<String> =
+    override suspend fun getWinningNumbers35FirstPick(): DataResult<List<String>> =
         getAllWinningNumbers().mapWiningNumbersByType(FIVE_35_FIRST)
 
-    override suspend fun getWinningNumbers35SecondPick(): List<String> =
+    override suspend fun getWinningNumbers35SecondPick(): DataResult<List<String>> =
         getAllWinningNumbers().mapWiningNumbersByType(FIVE_35_SECOND)
 
-    private fun List<String>.mapWiningNumbersByType(
+    private suspend fun DataResult<List<String>>.mapWiningNumbersByType(
         type: LotteryType
-    ): List<String> =
-        when (type) {
-            SIX_49 -> getSubset(range49)
-            SIX_42 -> getSubset(range42)
-            FIVE_35_FIRST -> getSubset(range35First)
-            FIVE_35_SECOND -> getSubset(range35Second)
+    ): DataResult<List<String>> =
+        mapResult { list ->
+            val strings = when (type) {
+                SIX_49 -> list.getSubset(range49)
+                SIX_42 -> list.getSubset(range42)
+                FIVE_35_FIRST -> list.getSubset(range35First)
+                FIVE_35_SECOND -> list.getSubset(range35Second)
+            }
+            strings
         }
 
     private fun List<String>.getSubset(range: IntRange) =
