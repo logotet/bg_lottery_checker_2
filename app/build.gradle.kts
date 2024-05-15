@@ -79,5 +79,9 @@ dependencies {
     implementation(libs.hilt.compose.navigation)
     kapt(libs.hilt)
 
+    // Jsoup
     implementation (libs.jsoup)
+
+    implementation(libs.androidx.navigation.compose)
+
 }
