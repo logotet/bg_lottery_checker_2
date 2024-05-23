@@ -1,5 +1,6 @@
 package com.logotet.totochecker.data.remote
 
+import com.logotet.totochecker.domain.data.DataErrorType
 import com.logotet.totochecker.domain.data.DataResult
 import com.logotet.totochecker.domain.data.handleApiCall
 import kotlinx.coroutines.Dispatchers
@@ -13,7 +14,7 @@ class JsoupClient {
             Jsoup.connect(BASE_URL).get()
         }
 
-    suspend fun getElements(): DataResult<Elements> =
+    suspend fun getElements(): DataResult<Elements, DataErrorType> =
         handleApiCall {
             val document = getDocument()
             document.getElementsByClass(ELEMENT_SIGNATURE)
