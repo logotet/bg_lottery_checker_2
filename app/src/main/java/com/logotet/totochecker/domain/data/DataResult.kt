@@ -1,10 +1,11 @@
 package com.logotet.totochecker.domain.data
 
-sealed interface DataResult<out Data> {
-    data class Success<Data>(val data: Data) : DataResult<Data>
 
-    sealed class Error(throwable: Throwable?) : DataResult<Nothing>{
-        data class Generic(val throwable: Throwable?): Error(throwable)
-        data class Timeout(val throwable: Throwable?): Error(throwable)
-    }
+interface DataErrorType
+
+sealed interface DataResult<out Data, out E : DataErrorType> {
+
+    data class Success<Data>(val data: Data) : DataResult<Data, Nothing>
+
+    data class Error<E>(val throwable: Throwable?, val e: E) : DataResult<Nothing, DataErrorType>
 }

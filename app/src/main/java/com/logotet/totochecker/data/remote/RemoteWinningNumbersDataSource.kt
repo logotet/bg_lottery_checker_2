@@ -1,11 +1,13 @@
 package com.logotet.totochecker.data.remote
 
-import com.logotet.totochecker.data.remote.LotteryType.FIVE_35_FIRST
-import com.logotet.totochecker.data.remote.LotteryType.FIVE_35_SECOND
-import com.logotet.totochecker.data.remote.LotteryType.SIX_42
-import com.logotet.totochecker.data.remote.LotteryType.SIX_49
+import com.logotet.totochecker.domain.data.DataErrorType
 import com.logotet.totochecker.domain.data.DataResult
 import com.logotet.totochecker.domain.data.DataResult.Success
+import com.logotet.totochecker.domain.data.LotteryType
+import com.logotet.totochecker.domain.data.LotteryType.FIVE_35_FIRST
+import com.logotet.totochecker.domain.data.LotteryType.FIVE_35_SECOND
+import com.logotet.totochecker.domain.data.LotteryType.SIX_42
+import com.logotet.totochecker.domain.data.LotteryType.SIX_49
 import com.logotet.totochecker.domain.data.WinningNumbersDataSource
 import com.logotet.totochecker.domain.data.mapResult
 
@@ -15,7 +17,7 @@ class RemoteWinningNumbersDataSource(
 
     private var allWinningNumbers: List<String> = emptyList()
 
-    private suspend fun getAllWinningNumbers(): DataResult<List<String>> {
+    suspend fun getAllWinningNumbers(): DataResult<List<String>, DataErrorType> {
 
         return if (allWinningNumbers.isEmpty()) {
             val result = jsoupClient.getElements()
@@ -32,21 +34,21 @@ class RemoteWinningNumbersDataSource(
         }
     }
 
-    override suspend fun getWinningNumbers49(): DataResult<List<String>> =
+    override suspend fun getWinningNumbers49(): DataResult<List<String>, DataErrorType> =
         getAllWinningNumbers().mapWiningNumbersByType(SIX_49)
 
-    override suspend fun getWinningNumbers42(): DataResult<List<String>> =
+    override suspend fun getWinningNumbers42(): DataResult<List<String>, DataErrorType> =
         getAllWinningNumbers().mapWiningNumbersByType(SIX_42)
 
-    override suspend fun getWinningNumbers35FirstPick(): DataResult<List<String>> =
+    override suspend fun getWinningNumbers35FirstPick(): DataResult<List<String>, DataErrorType> =
         getAllWinningNumbers().mapWiningNumbersByType(FIVE_35_FIRST)
 
-    override suspend fun getWinningNumbers35SecondPick(): DataResult<List<String>> =
+    override suspend fun getWinningNumbers35SecondPick(): DataResult<List<String>, DataErrorType> =
         getAllWinningNumbers().mapWiningNumbersByType(FIVE_35_SECOND)
 
-    private suspend fun DataResult<List<String>>.mapWiningNumbersByType(
+    private suspend fun DataResult<List<String>, DataErrorType>.mapWiningNumbersByType(
         type: LotteryType
-    ): DataResult<List<String>> =
+    ): DataResult<List<String>, DataErrorType> =
         mapResult { list ->
             val strings = when (type) {
                 SIX_49 -> list.getSubset(range49)
@@ -66,11 +68,4 @@ class RemoteWinningNumbersDataSource(
         private val range35Second = 11..16
         private val range42 = 16..22
     }
-}
-
-enum class LotteryType {
-    SIX_49,
-    SIX_42,
-    FIVE_35_FIRST,
-    FIVE_35_SECOND
 }
