@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.logotet.totochecker.data.remote.RemoteWinningNumbersDataSource
-import com.logotet.totochecker.domain.data.DataResult
+import com.logotet.totochecker.domain.data.onMultipleResults
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -30,22 +30,24 @@ class MainViewModel @Inject constructor(
                 val winningNumbers35FirstPickResult = getWinningNumbers35FirstPick()
                 val winningNumbers35SecondPickResult = getWinningNumbers35SecondPick()
 
-                if (
-                    winningNumbers49Result is DataResult.Success &&
-                    winningNumbers42Result is DataResult.Success &&
-                    winningNumbers35FirstPickResult is DataResult.Success &&
-                    winningNumbers35SecondPickResult is DataResult.Success
-                ) {
-                    screenState = MainUIState(
-                        numbers49 = winningNumbers49Result.data,
-                        numbers42 = winningNumbers42Result.data,
-                        numbers35FirstPick = winningNumbers35FirstPickResult.data,
-                        numbers35SecondPick = winningNumbers35SecondPickResult.data,
-                        dataState = DataState.Success
-                    )
-                } else {
-                    screenState = MainUIState(dataState = DataState.ErrorPrompt)
-                }
+                onMultipleResults(
+                    winningNumbers49Result,
+                    winningNumbers42Result,
+                    winningNumbers35FirstPickResult,
+                    winningNumbers35SecondPickResult,
+                    onCombinedSuccess = { arrayOfNumbers ->
+                        screenState = MainUIState(
+                            numbers49 = arrayOfNumbers[0],
+                            numbers42 = arrayOfNumbers[2],
+                            numbers35FirstPick = arrayOfNumbers[2],
+                            numbers35SecondPick = arrayOfNumbers[3],
+                            dataState = DataState.Success
+                        )
+                    },
+                    onFailure = {
+                        screenState = MainUIState(dataState = DataState.ErrorPrompt(it.throwable?.message))
+                    }
+                )
             }
         }
     }

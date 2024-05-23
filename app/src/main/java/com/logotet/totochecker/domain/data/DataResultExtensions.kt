@@ -1,37 +1,42 @@
 package com.logotet.totochecker.domain.data
 
-suspend fun <T, R> DataResult<T>.mapResult(
-    onSuccess: suspend (T) -> R,
-): DataResult<R> {
-    return if (this is DataResult.Success) {
+suspend fun <T, R> DataResult<T, DataErrorType>.mapResult(
+    onSuccess: suspend (T) -> R
+): DataResult<R, DataErrorType> {
+    return if (this is DataResult.Success<T>) {
         DataResult.Success(onSuccess(this.data))
     } else {
-        DataResult.Error.Generic(null)
+        this as DataResult.Error<DataErrorType>
     }
 }
 
-suspend fun <T> DataResult<T>.onResult(
+suspend fun <T> DataResult<T, Nothing>.collectResult(
     onSuccess: suspend (T) -> Unit,
-    onFailure: suspend (DataResult.Error) -> Unit,
+    onFailure: suspend (DataResult.Error<DataErrorType>) -> Unit,
 ) {
     if (this is DataResult.Success) {
         onSuccess(this.data)
     } else {
-        onFailure(DataResult.Error.Generic(null))
+        onFailure(this as DataResult.Error<DataErrorType>)
     }
 }
 
 suspend fun <T> onMultipleResults(
-    vararg results: DataResult<T>,
-    onCombinedSuccess: suspend (Array<out DataResult<T>>) -> Unit,
-    onFailure: suspend (DataResult.Error) -> Unit
+    vararg results: DataResult<T, DataErrorType>,
+    onCombinedSuccess: suspend (List<T>) -> Unit,
+    onFailure: suspend (DataResult.Error<DataErrorType>) -> Unit
 ) {
-    for (i in results) {
-        if (i is DataResult.Error) {
-            onFailure(DataResult.Error.Generic(null))
-            break
+    for (singleResult in results) {
+        if (singleResult is DataResult.Error<*>) {
+            onFailure(singleResult as DataResult.Error<DataErrorType>)
+            return
         }
     }
 
-    onCombinedSuccess(results)
+    val listOfData = (results as Array<DataResult.Success<T>>)
+        .map {
+            it.data
+        }
+
+    onCombinedSuccess(listOfData)
 }
