@@ -21,6 +21,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.logotet.totochecker.presentation.navigation.Route
+import com.logotet.totochecker.presentation.ui.check.NumberCheckerScreen
 import com.logotet.totochecker.presentation.ui.composables.BottomAppBar
 import com.logotet.totochecker.presentation.ui.main.MainScreen
 import com.logotet.totochecker.ui.theme.TotoCheckerTheme
@@ -54,7 +55,7 @@ class MainActivity : ComponentActivity() {
                         NavHost(
                             modifier = Modifier.padding(paddingValues),
                             navController = navController,
-                            startDestination = Route.Home.route
+                            startDestination = Route.Check.route
                         ) {
                             composable(Route.Home.route) {
                                 appBarTitle = Route.Home.label
@@ -63,7 +64,7 @@ class MainActivity : ComponentActivity() {
 
                             composable(Route.Check.route) {
                                 appBarTitle = Route.Check.label
-                                MainScreen(backgroundColor = Color.Gray)
+                                NumberCheckerScreen()
                             }
 
                             composable(Route.MyNumbers.route) {
