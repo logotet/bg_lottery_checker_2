@@ -10,4 +10,7 @@
     <string name="dialog_general_error">Something went wrong</string>
     <string name="data_error_message">Data could not be loaded</string>
     <string name="dialog_confirm_button">OK</string>
+
+    // Check screen
+    <string name="check_button">Check</string>
 </resources>

@@ -1,34 +1,34 @@
 package com.logotet.totochecker.domain.data
 
-suspend fun <T, R> DataResult<T, DataErrorType>.mapResult(
+suspend fun <T, R> DataResult<T, AppError>.mapResult(
     onSuccess: suspend (T) -> R
-): DataResult<R, DataErrorType> {
+): DataResult<R, AppError> {
     return if (this is DataResult.Success<T>) {
         DataResult.Success(onSuccess(this.data))
     } else {
-        this as DataResult.Error<DataErrorType>
+        this as DataResult.Error<AppError>
     }
 }
 
-suspend fun <T> DataResult<T, Nothing>.collectResult(
+suspend fun <T> DataResult<T, AppError>.collectResult(
     onSuccess: suspend (T) -> Unit,
-    onFailure: suspend (DataResult.Error<DataErrorType>) -> Unit,
+    onFailure: suspend (DataResult.Error<AppError>) -> Unit,
 ) {
     if (this is DataResult.Success) {
         onSuccess(this.data)
     } else {
-        onFailure(this as DataResult.Error<DataErrorType>)
+        onFailure(this as DataResult.Error<AppError>)
     }
 }
 
 suspend fun <T> onMultipleResults(
-    vararg results: DataResult<T, DataErrorType>,
+    vararg results: DataResult<T, AppError>,
     onCombinedSuccess: suspend (List<T>) -> Unit,
-    onFailure: suspend (DataResult.Error<DataErrorType>) -> Unit
+    onFailure: suspend (DataResult.Error<AppError>) -> Unit
 ) {
     for (singleResult in results) {
         if (singleResult is DataResult.Error<*>) {
-            onFailure(singleResult as DataResult.Error<DataErrorType>)
+            onFailure(singleResult as DataResult.Error<AppError>)
             return
         }
     }

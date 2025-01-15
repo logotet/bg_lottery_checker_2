@@ -1,6 +1,6 @@
 package com.logotet.totochecker.data.remote
 
-import com.logotet.totochecker.domain.data.DataErrorType
+import com.logotet.totochecker.domain.data.AppError
 import com.logotet.totochecker.domain.data.DataResult
 import com.logotet.totochecker.domain.data.DataResult.Success
 import com.logotet.totochecker.domain.data.LotteryType
@@ -17,7 +17,7 @@ class RemoteWinningNumbersDataSource(
 
     private var allWinningNumbers: List<String> = emptyList()
 
-    suspend fun getAllWinningNumbers(): DataResult<List<String>, DataErrorType> {
+    suspend fun getAllWinningNumbers(): DataResult<List<String>, AppError> {
 
         return if (allWinningNumbers.isEmpty()) {
             val result = jsoupClient.getElements()
@@ -34,21 +34,21 @@ class RemoteWinningNumbersDataSource(
         }
     }
 
-    override suspend fun getWinningNumbers49(): DataResult<List<String>, DataErrorType> =
+    override suspend fun getWinningNumbers49(): DataResult<List<String>, AppError> =
         getAllWinningNumbers().mapWiningNumbersByType(SIX_49)
 
-    override suspend fun getWinningNumbers42(): DataResult<List<String>, DataErrorType> =
+    override suspend fun getWinningNumbers42(): DataResult<List<String>, AppError> =
         getAllWinningNumbers().mapWiningNumbersByType(SIX_42)
 
-    override suspend fun getWinningNumbers35FirstPick(): DataResult<List<String>, DataErrorType> =
+    override suspend fun getWinningNumbers35FirstPick(): DataResult<List<String>, AppError> =
         getAllWinningNumbers().mapWiningNumbersByType(FIVE_35_FIRST)
 
-    override suspend fun getWinningNumbers35SecondPick(): DataResult<List<String>, DataErrorType> =
+    override suspend fun getWinningNumbers35SecondPick(): DataResult<List<String>, AppError> =
         getAllWinningNumbers().mapWiningNumbersByType(FIVE_35_SECOND)
 
-    private suspend fun DataResult<List<String>, DataErrorType>.mapWiningNumbersByType(
+    private suspend fun DataResult<List<String>, AppError>.mapWiningNumbersByType(
         type: LotteryType
-    ): DataResult<List<String>, DataErrorType> =
+    ): DataResult<List<String>, AppError> =
         mapResult { list ->
             val strings = when (type) {
                 SIX_49 -> list.getSubset(range49)
