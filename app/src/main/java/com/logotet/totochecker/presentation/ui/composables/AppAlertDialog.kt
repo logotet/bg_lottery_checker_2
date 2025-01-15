@@ -7,6 +7,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import com.logotet.totochecker.R
 
 @Composable
 fun AppAlertDialog(
@@ -14,7 +15,7 @@ fun AppAlertDialog(
     icon: @Composable () -> Unit = {},
     title: @Composable () -> Unit = {},
     text: @Composable () -> Unit,
-    @StringRes confirmButtonTextId: Int,
+    @StringRes confirmButtonTextId: Int = R.string.dialog_confirm_button,
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
 ) {
