@@ -1,7 +1,7 @@
 package com.logotet.totochecker.domain.data
 
-import com.logotet.totochecker.domain.data.NetworkDataErrorType.GENERIC
-import com.logotet.totochecker.domain.data.NetworkDataErrorType.UNAVAILABLE
+import com.logotet.totochecker.domain.data.NetworkAppError.GENERIC
+import com.logotet.totochecker.domain.data.NetworkAppError.UNAVAILABLE
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withTimeout
 import org.jsoup.HttpStatusException
@@ -11,7 +11,7 @@ private const val TIMEOUT: Long = 20000
 
 suspend fun <T> handleApiCall(
     invoke: suspend () -> T
-): DataResult<T, DataErrorType> {
+): DataResult<T, AppError> {
     return try {
         withTimeout(TIMEOUT) {
             val result = invoke()
@@ -26,11 +26,11 @@ private fun parseError(throwable: Throwable) =
     when (throwable) {
     is TimeoutCancellationException -> DataResult.Error(throwable, TIMEOUT)
     is HttpStatusException -> DataResult.Error(throwable, UNAVAILABLE)
-    is UnknownHostException -> DataResult.Error(throwable, NetworkDataErrorType.NOT_FOUND)
+    is UnknownHostException -> DataResult.Error(throwable, NetworkAppError.NOT_FOUND)
     else -> DataResult.Error(null, GENERIC)
 }
 
-enum class NetworkDataErrorType : DataErrorType {
+enum class NetworkAppError : AppError {
     GENERIC,
     TIMEOUT,
     UNAUTHORIZED,

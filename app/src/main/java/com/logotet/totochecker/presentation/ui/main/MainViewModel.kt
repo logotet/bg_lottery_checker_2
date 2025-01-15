@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.logotet.totochecker.data.remote.RemoteWinningNumbersDataSource
+import com.logotet.totochecker.domain.data.WinningNumbersDataSource
 import com.logotet.totochecker.domain.data.onMultipleResults
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -13,18 +13,18 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    remoteWinningNumbersDataSource: RemoteWinningNumbersDataSource
+    winningNumbersDataSource: WinningNumbersDataSource
 ) : ViewModel() {
 
     var screenState by mutableStateOf(MainUIState())
 
     init {
-        loadAllWinningCombinations(remoteWinningNumbersDataSource)
+        loadAllWinningCombinations(winningNumbersDataSource)
     }
 
-    private fun loadAllWinningCombinations(remoteWinningNumbersDataSource: RemoteWinningNumbersDataSource) {
+    private fun loadAllWinningCombinations(winningNumbersDataSource: WinningNumbersDataSource) {
         viewModelScope.launch {
-            remoteWinningNumbersDataSource.apply {
+            winningNumbersDataSource.apply {
                 val winningNumbers49Result = getWinningNumbers49()
                 val winningNumbers42Result = getWinningNumbers42()
                 val winningNumbers35FirstPickResult = getWinningNumbers35FirstPick()
@@ -45,7 +45,7 @@ class MainViewModel @Inject constructor(
                         )
                     },
                     onFailure = {
-                        screenState = MainUIState(dataState = DataState.ErrorPrompt(it.throwable?.message))
+                        screenState = MainUIState(dataState = DataState.ErrorPrompt)
                     }
                 )
             }
