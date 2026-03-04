@@ -6,5 +6,5 @@ sealed interface DataResult<out Data, out E : AppError> {
 
     data class Success<Data>(val data: Data) : DataResult<Data, Nothing>
 
-    data class Error<E>(val throwable: Throwable?, val errorType: E) : DataResult<Nothing, AppError>
+    data class Error<E: AppError>(val errorType: E, val throwable: Throwable? = null) : DataResult<Nothing, E>
 }
