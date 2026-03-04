@@ -73,13 +73,22 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    implementation(libs.kotlinx.serialization.json)
+
     // Hilt
-    implementation(libs.hilt.compiler)
+    implementation(libs.hilt)
     implementation(libs.hilt.compose.navigation)
-    kapt(libs.hilt)
+    ksp(libs.hilt.compiler)
 
     // Jsoup
     implementation (libs.jsoup)
+
+    // Ktor
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.okhttp)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.serialization.kotlinx.json)
+    implementation(libs.ktor.client.logging)
 
     implementation(libs.androidx.navigation.compose)
 
