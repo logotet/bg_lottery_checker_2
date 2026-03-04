@@ -25,7 +25,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.logotet.totochecker.R
 import com.logotet.totochecker.domain.data.LotteryType
@@ -37,7 +36,7 @@ import com.logotet.totochecker.presentation.ui.composables.DropdownMenu
 
 @Composable
 fun NumberCheckerScreen(
-    viewModel: NumbersCheckerViewModel = hiltViewModel()
+    viewModel: NumbersCheckerViewModel
 ) {
     val state = viewModel.state
     val event by viewModel.events.collectAsStateWithLifecycle(Event.DismissEvent)
@@ -103,7 +102,8 @@ fun CheckScreenContent(
                     modifier = modifier.fillMaxWidth(), columns = GridCells.Adaptive(60.dp)
                 ) {
                     items(state.numberSequence) { ballValue ->
-                        ClickableBall(ballValue = ballValue,
+                        ClickableBall(
+                            ballValue = ballValue,
                             shouldBlockClick = isMaxNumbersReached,
                             onBallSelected = { numberValue ->
                                 onAction(Action.OnNumberSelected(numberValue))
@@ -125,7 +125,8 @@ fun CheckScreenContent(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Button(modifier = Modifier.fillMaxWidth(),
+            Button(
+                modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(10.dp),
                 enabled = isMaxNumbersReached,
                 onClick = { onAction(Action.OnCheckNumbers) }) {

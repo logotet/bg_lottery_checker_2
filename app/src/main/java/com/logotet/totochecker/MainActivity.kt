@@ -17,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -44,6 +45,7 @@ class MainActivity : ComponentActivity() {
                     var appBarTitle by remember {
                         mutableStateOf(Route.Home.label)
                     }
+
                     Scaffold(
                         topBar = {
                             TopAppBar(title = { Text(text = appBarTitle) })
@@ -55,21 +57,28 @@ class MainActivity : ComponentActivity() {
                         NavHost(
                             modifier = Modifier.padding(paddingValues),
                             navController = navController,
-                            startDestination = Route.Check.route
+                            startDestination = Route.Home.route
                         ) {
                             composable(Route.Home.route) {
                                 appBarTitle = Route.Home.label
-                                MainScreen()
+                                MainScreen(
+                                    viewModel = hiltViewModel()
+                                )
                             }
 
                             composable(Route.Check.route) {
                                 appBarTitle = Route.Check.label
-                                NumberCheckerScreen()
+                                NumberCheckerScreen(
+                                    viewModel = hiltViewModel()
+                                )
                             }
 
                             composable(Route.MyNumbers.route) {
                                 appBarTitle = Route.MyNumbers.label
-                                MainScreen(backgroundColor = Color.Yellow)
+                                MainScreen(
+                                    viewModel = hiltViewModel(),
+                                    backgroundColor = Color.Yellow
+                                )
                             }
                         }
                     }
