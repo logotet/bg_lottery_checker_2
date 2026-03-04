@@ -1,45 +1,70 @@
 package com.logotet.totochecker.domain.data
 
-import com.logotet.totochecker.domain.data.NetworkAppError.GENERIC
-import com.logotet.totochecker.domain.data.NetworkAppError.UNAVAILABLE
-import kotlinx.coroutines.TimeoutCancellationException
-import kotlinx.coroutines.withTimeout
-import org.jsoup.HttpStatusException
-import java.net.UnknownHostException
+import io.ktor.client.call.body
+import io.ktor.client.plugins.ClientRequestException
+import io.ktor.client.plugins.HttpRequestTimeoutException
+import io.ktor.client.plugins.RedirectResponseException
+import io.ktor.client.plugins.ServerResponseException
+import io.ktor.client.statement.HttpResponse
+import io.ktor.http.HttpStatusCode
+import io.ktor.serialization.JsonConvertException
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
+import kotlinx.serialization.SerializationException
 
-private const val TIMEOUT: Long = 20000
+suspend inline fun <reified Data> handleApiCall(
+    crossinline execute: suspend () -> HttpResponse
+): DataResult<Data, Remote> {
+    val result = try {
+        val response = execute()
+        val body = response.body<Data>()
 
-suspend fun <T> handleApiCall(
-    invoke: suspend () -> T
-): DataResult<T, AppError> {
-    return try {
-        withTimeout(TIMEOUT) {
-            val result = invoke()
-            DataResult.Success(result)
-        }
+        DataResult.Success(body)
     } catch (throwable: Throwable) {
         parseError(throwable)
     }
+
+    return result
 }
 
-private fun parseError(throwable: Throwable) =
-    when (throwable) {
-    is TimeoutCancellationException -> DataResult.Error(throwable, TIMEOUT)
-    is HttpStatusException -> DataResult.Error(throwable, UNAVAILABLE)
-    is UnknownHostException -> DataResult.Error(throwable, NetworkAppError.NOT_FOUND)
-    else -> DataResult.Error(null, GENERIC)
-}
+suspend fun parseError(throwable: Throwable?): DataResult<Nothing, Remote> =
+    DataResult.Error(
+        when (throwable) {
+            // for 3xx responses
+            is RedirectResponseException -> Remote.Redirect
+            // for 4xx responses
+            is ClientRequestException -> {
+                when (throwable.response.status) {
+                    HttpStatusCode.Unauthorized -> Remote.Unauthorized
+                    HttpStatusCode.Forbidden -> Remote.Forbidden
+                    HttpStatusCode.NotFound -> Remote.NotFound
+                    HttpStatusCode.MethodNotAllowed -> Remote.MethodNotAllowed
+                    else -> Remote.BadRequest
+                }
+            }
+            // for 5xx responses
+            is ServerResponseException -> Remote.Server
+            // for deserialization errors
+            is JsonConvertException, is SerializationException -> Remote.Serialization
+            // for timeout errors
+            is HttpRequestTimeoutException -> Remote.Timeout
+            // for any other errors
+            else -> {
+                currentCoroutineContext().ensureActive()
+                Remote.Unknown
+            }
+        }
+    )
 
-enum class NetworkAppError : AppError {
-    GENERIC,
-    TIMEOUT,
-    UNAUTHORIZED,
-    NOT_FOUND,
-    INTERNAL_SERVER_ERROR,
-    BAD_REQUEST,
-    UNPROCESSABLE_ENTITY,
-    UNSUPPORTED_MEDIA_TYPE,
-    FORBIDDEN,
-    UNAVAILABLE,
-    UNKNOWN
+sealed interface Remote : AppError {
+    data object Redirect : Remote
+    data object BadRequest : Remote
+    data object Server : Remote
+    data object Unauthorized : Remote
+    data object Forbidden : Remote
+    data object NotFound : Remote
+    data object MethodNotAllowed : Remote
+    data object Timeout : Remote
+    data object Serialization : Remote
+    data object Unknown : Remote
 }
