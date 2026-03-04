@@ -6,49 +6,38 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.logotet.totochecker.domain.data.WinningNumbersDataSource
-import com.logotet.totochecker.domain.data.onMultipleResults
+import com.logotet.totochecker.domain.data.collectResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    winningNumbersDataSource: WinningNumbersDataSource
+    private val winningNumbersDataSource: WinningNumbersDataSource
 ) : ViewModel() {
 
     var screenState by mutableStateOf(MainUIState())
 
     init {
-        loadAllWinningCombinations(winningNumbersDataSource)
+        loadAllWinningCombinations()
     }
 
-    private fun loadAllWinningCombinations(winningNumbersDataSource: WinningNumbersDataSource) {
+    private fun loadAllWinningCombinations() {
         viewModelScope.launch {
-            winningNumbersDataSource.apply {
-                val winningNumbers49Result = getWinningNumbers49()
-                val winningNumbers42Result = getWinningNumbers42()
-                val winningNumbers35FirstPickResult = getWinningNumbers35FirstPick()
-                val winningNumbers35SecondPickResult = getWinningNumbers35SecondPick()
-
-                onMultipleResults(
-                    winningNumbers49Result,
-                    winningNumbers42Result,
-                    winningNumbers35FirstPickResult,
-                    winningNumbers35SecondPickResult,
-                    onCombinedSuccess = { arrayOfNumbers ->
-                        screenState = MainUIState(
-                            numbers49 = arrayOfNumbers[0],
-                            numbers42 = arrayOfNumbers[2],
-                            numbers35FirstPick = arrayOfNumbers[2],
-                            numbers35SecondPick = arrayOfNumbers[3],
-                            dataState = DataState.Success
-                        )
-                    },
-                    onFailure = {
-                        screenState = MainUIState(dataState = DataState.ErrorPrompt)
-                    }
-                )
-            }
+            winningNumbersDataSource.getAllWinningNumbers().collectResult(
+                onSuccess = { arrayOfNumbers ->
+                    screenState = MainUIState(
+                        numbers49 = arrayOfNumbers[0].numbers,
+                        numbers42 = arrayOfNumbers[2].numbers,
+                        numbers35FirstPick = arrayOfNumbers[2].numbers,
+                        numbers35SecondPick = arrayOfNumbers[3].numbers,
+                        dataState = DataState.Success
+                    )
+                },
+                onFailure = {
+                    screenState = MainUIState(dataState = DataState.ErrorPrompt)
+                }
+            )
         }
     }
 
@@ -74,10 +63,10 @@ data class MainUIState(
 )
 
 sealed class DataState {
-    data object Success: DataState()
-    data object Loading: DataState()
-    data object ErrorPrompt: DataState()
-    data object ErrorFinal: DataState()
+    data object Success : DataState()
+    data object Loading : DataState()
+    data object ErrorPrompt : DataState()
+    data object ErrorFinal : DataState()
 }
 
 sealed class Action {

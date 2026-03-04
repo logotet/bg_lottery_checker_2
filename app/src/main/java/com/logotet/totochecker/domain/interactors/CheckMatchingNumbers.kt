@@ -1,5 +1,6 @@
 package com.logotet.totochecker.domain.interactors
 
+import com.logotet.totochecker.data.model.NumbersDto
 import com.logotet.totochecker.domain.data.AppError
 import com.logotet.totochecker.domain.data.DataResult
 import com.logotet.totochecker.domain.data.LotteryType
@@ -27,13 +28,13 @@ class CheckMatchingNumbers(
     }
 
     private fun getMatchingNumbers(
-        winningNumbers: List<String>,
+        winningNumbers: NumbersDto,
         selectedNumbers: List<String>
-    ): List<String> = winningNumbers.filter { number ->
+    ): List<String> = winningNumbers.numbers.filter { number ->
         selectedNumbers.contains(number)
     }
 
-    private suspend fun LotteryType.getWinningNumbers(): DataResult<List<String>, AppError> =
+    private suspend fun LotteryType.getWinningNumbers(): DataResult<NumbersDto, AppError> =
         when (this) {
             SIX_49 -> remoteWinningNumbersDataSource.getWinningNumbers49()
             SIX_42 -> remoteWinningNumbersDataSource.getWinningNumbers42()

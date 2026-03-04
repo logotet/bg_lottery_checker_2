@@ -25,18 +25,21 @@ suspend fun <T> onMultipleResults(
     vararg results: DataResult<T, AppError>,
     onCombinedSuccess: suspend (List<T>) -> Unit,
     onFailure: suspend (DataResult.Error<AppError>) -> Unit
-) {
+): DataResult<List<T>, AppError> {
+    val mutableList = mutableListOf<T>()
+
     for (singleResult in results) {
         if (singleResult is DataResult.Error<*>) {
             onFailure(singleResult as DataResult.Error<AppError>)
-            return
+            return DataResult.Error(singleResult.errorType)
+        } else {
+            (singleResult as? DataResult.Success<T>)?.data?.let {
+                mutableList.add(it)
+            }
         }
     }
 
-    val listOfData = (results as Array<DataResult.Success<T>>)
-        .map {
-            it.data
-        }
+    onCombinedSuccess(mutableList)
 
-    onCombinedSuccess(listOfData)
+    return DataResult.Success(mutableList)
 }

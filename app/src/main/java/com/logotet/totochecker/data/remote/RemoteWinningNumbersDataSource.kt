@@ -1,71 +1,69 @@
 package com.logotet.totochecker.data.remote
 
+import com.logotet.totochecker.data.model.NumbersDto
 import com.logotet.totochecker.domain.data.AppError
 import com.logotet.totochecker.domain.data.DataResult
 import com.logotet.totochecker.domain.data.DataResult.Success
-import com.logotet.totochecker.domain.data.LotteryType
-import com.logotet.totochecker.domain.data.LotteryType.FIVE_35_FIRST
-import com.logotet.totochecker.domain.data.LotteryType.FIVE_35_SECOND
-import com.logotet.totochecker.domain.data.LotteryType.SIX_42
-import com.logotet.totochecker.domain.data.LotteryType.SIX_49
 import com.logotet.totochecker.domain.data.WinningNumbersDataSource
-import com.logotet.totochecker.domain.data.mapResult
+import com.logotet.totochecker.domain.data.handleApiCall
+import com.logotet.totochecker.domain.data.onMultipleResults
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 
 class RemoteWinningNumbersDataSource(
-    private val jsoupClient: JsoupClient
+    private val ktorClient: KtorClient
 ) : WinningNumbersDataSource {
 
-    private var allWinningNumbers: List<String> = emptyList()
+    private var allWinningNumbers: List<NumbersDto> = emptyList()
 
-    suspend fun getAllWinningNumbers(): DataResult<List<String>, AppError> {
-
+    override suspend fun getAllWinningNumbers(): DataResult<List<NumbersDto>, AppError> {
         return if (allWinningNumbers.isEmpty()) {
-            val result = jsoupClient.getElements()
+            coroutineScope {
+                val numbers49Deferred = async { getWinningNumbers49() }
+                val numbers42Deferred = async { getWinningNumbers42() }
+                val numbers35FirstPickDeferred = async { getWinningNumbers35FirstPick() }
+                val numbers35SecondPickDeferred = async { getWinningNumbers35SecondPick() }
 
-            result.mapResult { elements ->
-                allWinningNumbers = elements.map { element ->
-                    element.text()
-                }
+                val numbers49 = numbers49Deferred.await()
+                val numbers42 = numbers42Deferred.await()
+                val numbers35FirstPick = numbers35FirstPickDeferred.await()
+                val numbers35SecondPick = numbers35SecondPickDeferred.await()
 
-                allWinningNumbers
+                onMultipleResults(
+                    numbers49,
+                    numbers42,
+                    numbers35FirstPick,
+                    numbers35SecondPick,
+                    onCombinedSuccess = { arrayOfNumbers ->
+                        allWinningNumbers = arrayOfNumbers
+                    },
+                    onFailure = {
+                            ////
+                    }
+                )
             }
         } else {
             Success(allWinningNumbers)
         }
     }
 
-    override suspend fun getWinningNumbers49(): DataResult<List<String>, AppError> =
-        getAllWinningNumbers().mapWiningNumbersByType(SIX_49)
-
-    override suspend fun getWinningNumbers42(): DataResult<List<String>, AppError> =
-        getAllWinningNumbers().mapWiningNumbersByType(SIX_42)
-
-    override suspend fun getWinningNumbers35FirstPick(): DataResult<List<String>, AppError> =
-        getAllWinningNumbers().mapWiningNumbersByType(FIVE_35_FIRST)
-
-    override suspend fun getWinningNumbers35SecondPick(): DataResult<List<String>, AppError> =
-        getAllWinningNumbers().mapWiningNumbersByType(FIVE_35_SECOND)
-
-    private suspend fun DataResult<List<String>, AppError>.mapWiningNumbersByType(
-        type: LotteryType
-    ): DataResult<List<String>, AppError> =
-        mapResult { list ->
-            val strings = when (type) {
-                SIX_49 -> list.getSubset(range49)
-                SIX_42 -> list.getSubset(range42)
-                FIVE_35_FIRST -> list.getSubset(range35First)
-                FIVE_35_SECOND -> list.getSubset(range35Second)
-            }
-            strings
+    override suspend fun getWinningNumbers49(): DataResult<NumbersDto, AppError> =
+        handleApiCall<NumbersDto> {
+            ktorClient.get("6-49")
         }
 
-    private fun List<String>.getSubset(range: IntRange) =
-        subList(range.first, range.last)
+    override suspend fun getWinningNumbers42(): DataResult<NumbersDto, AppError> =
+        handleApiCall<NumbersDto> {
+            ktorClient.get("6-42")
+        }
 
-    companion object {
-        private val range49 = 0..6
-        private val range35First = 6..11
-        private val range35Second = 11..16
-        private val range42 = 16..22
-    }
+    override suspend fun getWinningNumbers35FirstPick(): DataResult<NumbersDto, AppError> =
+        handleApiCall<NumbersDto> {
+            ktorClient.get("6-42")
+        }
+
+    override suspend fun getWinningNumbers35SecondPick(): DataResult<NumbersDto, AppError> =
+        handleApiCall<NumbersDto> {
+            ktorClient.get("6-42")
+        }
 }

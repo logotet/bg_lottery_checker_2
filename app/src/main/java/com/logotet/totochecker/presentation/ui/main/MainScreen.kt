@@ -14,14 +14,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.logotet.totochecker.R
 import com.logotet.totochecker.presentation.ui.composables.AppAlertDialog
 import com.logotet.totochecker.presentation.ui.composables.BallList
 
 @Composable
 fun MainScreen(
-    viewModel: MainViewModel = hiltViewModel(),
+    viewModel: MainViewModel,
     backgroundColor: Color = Color.White
 ) {
     val state = viewModel.screenState
@@ -102,6 +101,7 @@ fun MainScreenPreview() {
             numbers42 = listOf("1", "2", "3", "4", "5", "6"),
             numbers35FirstPick = listOf("1", "2", "3", "4", "5"),
             numbers35SecondPick = listOf("1", "2", "3", "4", "5"),
+            dataState = DataState.Success
         ),
         backgroundColor = Color.White,
         onAction = {}

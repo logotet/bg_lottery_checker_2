@@ -1,11 +1,15 @@
 package com.logotet.totochecker.domain.data
 
+import com.logotet.totochecker.data.model.NumbersDto
+
 interface WinningNumbersDataSource {
-    suspend fun getWinningNumbers49(): DataResult<List<String>, AppError>
+    suspend fun getAllWinningNumbers(): DataResult<List<NumbersDto>, AppError>
 
-    suspend fun getWinningNumbers42(): DataResult<List<String>, AppError>
+    suspend fun getWinningNumbers49(): DataResult<NumbersDto, AppError>
 
-    suspend fun getWinningNumbers35FirstPick(): DataResult<List<String>, AppError>
+    suspend fun getWinningNumbers42(): DataResult<NumbersDto, AppError>
 
-    suspend fun getWinningNumbers35SecondPick(): DataResult<List<String>, AppError>
+    suspend fun getWinningNumbers35FirstPick(): DataResult<NumbersDto, AppError>
+
+    suspend fun getWinningNumbers35SecondPick(): DataResult<NumbersDto, AppError>
 }
