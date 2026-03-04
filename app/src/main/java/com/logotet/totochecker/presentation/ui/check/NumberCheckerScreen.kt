@@ -68,7 +68,9 @@ fun NumberCheckerScreen(
 
 @Composable
 fun CheckScreenContent(
-    modifier: Modifier = Modifier, state: CheckScreenState, onAction: (Action) -> Unit
+    modifier: Modifier = Modifier,
+    state: CheckScreenState,
+    onAction: (Action) -> Unit
 ) {
     var counter by remember {
         mutableIntStateOf(0)
@@ -135,6 +137,6 @@ fun CheckScreenContent(
 
 @Preview(showSystemUi = true)
 @Composable
-fun CheckScreenContentPreview(modifier: Modifier = Modifier) {
+fun CheckScreenContentPreview() {
     CheckScreenContent(state = CheckScreenState.defaultState, onAction = {})
 }

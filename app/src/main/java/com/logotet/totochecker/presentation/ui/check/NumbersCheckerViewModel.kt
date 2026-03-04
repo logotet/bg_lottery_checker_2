@@ -38,9 +38,13 @@ class NumbersCheckerViewModel @Inject constructor(
             is Action.OnNumberSelected -> state.addNumber(action.number)
             is Action.OnNumberUnselected -> state.removeNumber(action.number)
             is Action.OnCheckNumbers -> checkNumbers()
-            is Action.DismissDialog -> viewModelScope.launch{
-                _events.send(Event.DismissEvent)
-            }
+            is Action.DismissDialog -> dismissEvent()
+        }
+    }
+
+    private fun dismissEvent() {
+        viewModelScope.launch {
+            _events.send(Event.DismissEvent)
         }
     }
 
@@ -51,7 +55,7 @@ class NumbersCheckerViewModel @Inject constructor(
                 state.selectedNumbers
             ).collectResult(
                 onSuccess = {
-                    _events.send(OnMatchingNumbersSelected(it))
+                    _events.send(OnMatchingNumbersSelected(it.map { n ->  n.toString() }))
                 },
                 onFailure = {
                     _events.send(OnError(it.errorType))
@@ -117,7 +121,7 @@ sealed interface Event {
     data class OnMatchingNumbersSelected(val matchingNumbers: List<String>) : Event
 }
 
-fun getListOfConsecutiveNumbers(endNumber: Int): List<String> =
+private fun getListOfConsecutiveNumbers(endNumber: Int): List<String> =
     (1..endNumber).toList().map { number ->
         number.toString()
     }

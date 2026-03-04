@@ -20,10 +20,10 @@ import com.logotet.totochecker.R
 
 @Composable
 fun BallList(
+    modifier: Modifier = Modifier,
     numbers: List<String>,
     @StringRes listHeader: Int,
-    @StringRes subHeader: Int? = null,
-    modifier: Modifier = Modifier
+    @StringRes subHeader: Int? = null
 ) {
     Column(
         verticalArrangement = Arrangement.Center,

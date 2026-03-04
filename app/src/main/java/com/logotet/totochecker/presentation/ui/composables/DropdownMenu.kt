@@ -31,11 +31,10 @@ fun DropdownMenu(
 
     var selectedValue by remember { mutableStateOf(options[0]) }
 
-
     ExposedDropdownMenuBox(
+        modifier = modifier.padding(vertical = 20.dp).fillMaxWidth(),
         expanded = expanded,
-        onExpandedChange = { expanded = !expanded },
-        modifier = modifier.padding(vertical = 20.dp)
+        onExpandedChange = { expanded = !expanded }
     ) {
         OutlinedTextField(
             modifier = Modifier
