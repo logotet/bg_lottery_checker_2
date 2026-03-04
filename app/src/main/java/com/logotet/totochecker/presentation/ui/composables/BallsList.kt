@@ -3,7 +3,7 @@ package com.logotet.totochecker.presentation.ui.composables
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
@@ -51,7 +51,10 @@ fun BallList(
             )
         }
 
-        Row(modifier = Modifier.padding(top = 8.dp)) {
+        FlowRow(
+            modifier = Modifier.padding(top = 8.dp),
+            horizontalArrangement = Arrangement.Center
+        ) {
             numbers.forEach { value ->
                 Ball(ballValue = value)
             }
