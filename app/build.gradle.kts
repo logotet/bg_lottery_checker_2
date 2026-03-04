@@ -80,9 +80,6 @@ dependencies {
     implementation(libs.hilt.compose.navigation)
     ksp(libs.hilt.compiler)
 
-    // Jsoup
-    implementation (libs.jsoup)
-
     // Ktor
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.okhttp)
@@ -91,5 +88,4 @@ dependencies {
     implementation(libs.ktor.client.logging)
 
     implementation(libs.androidx.navigation.compose)
-
 }
