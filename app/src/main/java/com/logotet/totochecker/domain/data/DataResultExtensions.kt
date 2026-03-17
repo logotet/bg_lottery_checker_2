@@ -43,3 +43,13 @@ suspend fun <T> onMultipleResults(
 
     return DataResult.Success(mutableList)
 }
+
+suspend fun <T> DataResult<T, AppError>.onSuccess(
+    onSuccess: suspend (T) -> Unit
+): DataResult<T, AppError> {
+    if (this is DataResult.Success) {
+        onSuccess(this.data)
+    }
+
+    return this
+}
