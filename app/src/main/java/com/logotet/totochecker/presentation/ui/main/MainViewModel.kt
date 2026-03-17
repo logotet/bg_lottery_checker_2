@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.logotet.totochecker.data.model.GameTypeDto
 import com.logotet.totochecker.domain.data.WinningNumbersDataSource
 import com.logotet.totochecker.domain.data.collectResult
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,12 +26,12 @@ class MainViewModel @Inject constructor(
     private fun loadAllWinningCombinations() {
         viewModelScope.launch {
             winningNumbersDataSource.getAllWinningNumbers().collectResult(
-                onSuccess = { arrayOfNumbers ->
+                onSuccess = { allWinningNumbers->
                     screenState = MainUIState(
-                        numbers49 = arrayOfNumbers[0].numbers,
-                        numbers42 = arrayOfNumbers[2].numbers,
-                        numbers35FirstPick = arrayOfNumbers[2].numbers,
-                        numbers35SecondPick = arrayOfNumbers[3].numbers,
+                        numbers49 = allWinningNumbers[GameTypeDto.SIX_49]?.numbers ?: emptyList(),
+                        numbers42 = allWinningNumbers[GameTypeDto.SIX_42] ?.numbers?: emptyList(),
+                        numbers35FirstPick = allWinningNumbers[GameTypeDto.FIVE_35]?.numbers ?: emptyList(),
+                        numbers35SecondPick = allWinningNumbers[GameTypeDto.FIVE_35]?.numbers ?: emptyList(),
                         dataState = DataState.Success
                     )
                 },

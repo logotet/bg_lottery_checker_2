@@ -45,6 +45,7 @@ class  KtorClient(
 
     companion object {
         const val BASE_URL = "https://totofastapi2.vercel.app/"
+        const val ALL_WINNING_NUMBERS = "winning-numbers"
         const val EMPTY_PATH = ""
     }
 }
