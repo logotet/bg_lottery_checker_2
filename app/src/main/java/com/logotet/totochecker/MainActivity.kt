@@ -11,6 +11,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,10 +49,18 @@ class MainActivity : ComponentActivity() {
 
                     Scaffold(
                         topBar = {
-                            TopAppBar(title = { Text(text = appBarTitle) })
+                            TopAppBar(
+                                title = { Text(text = appBarTitle) },
+                                colors = TopAppBarDefaults.topAppBarColors(
+                                    containerColor = MaterialTheme.colorScheme.primary,
+                                    titleContentColor = Color.White
+                                )
+                            )
                         },
                         bottomBar = {
-                            BottomAppBar(navController = navController)
+                            BottomAppBar(navigate = { route ->
+                                navController.navigate(route)
+                            })
                         }
                     ) { paddingValues ->
                         NavHost(
