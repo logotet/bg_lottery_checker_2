@@ -11,3 +11,8 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 val Ball = Color(0xFF7D5260)
+
+val Dixie = Color(0xFFe39a1a)
+val Sapphire = Color(0xFF33339c)
+val Parsley = Color(0xFF264e18)
+val Gallery = Color(0xFFededed)
