@@ -22,6 +22,9 @@ enum class GameTypeDto {
     @JsonNames("6x42")
     SIX_42,
 
-    @JsonNames("5x35")
-    FIVE_35
+    @JsonNames("5x35xA")
+    FIVE_35_FIRST_PICK,
+
+    @JsonNames("5x35xB")
+    FIVE_35_SECOND_PICK
 }

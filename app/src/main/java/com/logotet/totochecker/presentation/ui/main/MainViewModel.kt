@@ -30,8 +30,8 @@ class MainViewModel @Inject constructor(
                     screenState = MainUIState(
                         numbers49 = allWinningNumbers[GameTypeDto.SIX_49]?.numbers ?: emptyList(),
                         numbers42 = allWinningNumbers[GameTypeDto.SIX_42] ?.numbers?: emptyList(),
-                        numbers35FirstPick = allWinningNumbers[GameTypeDto.FIVE_35]?.numbers ?: emptyList(),
-                        numbers35SecondPick = allWinningNumbers[GameTypeDto.FIVE_35]?.numbers ?: emptyList(),
+                        numbers35FirstPick = allWinningNumbers[GameTypeDto.FIVE_35_FIRST_PICK]?.numbers ?: emptyList(),
+                        numbers35SecondPick = allWinningNumbers[GameTypeDto.FIVE_35_SECOND_PICK]?.numbers ?: emptyList(),
                         dataState = DataState.Success
                     )
                 },

@@ -52,7 +52,7 @@ class RemoteWinningNumbersDataSource(
             getAllWinningNumbers()
         }
 
-        return allWinningNumbers[GameTypeDto.FIVE_35]?.let {
+        return allWinningNumbers[GameTypeDto.FIVE_35_FIRST_PICK]?.let {
             DataResult.Success(it)
         } ?: DataResult.Error(Remote.NotFound)
     }
@@ -62,7 +62,7 @@ class RemoteWinningNumbersDataSource(
             getAllWinningNumbers()
         }
 
-        return allWinningNumbers[GameTypeDto.FIVE_35]?.let {
+        return allWinningNumbers[GameTypeDto.FIVE_35_SECOND_PICK]?.let {
             DataResult.Success(it)
         } ?: DataResult.Error(Remote.NotFound)
     }
