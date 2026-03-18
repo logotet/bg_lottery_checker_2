@@ -33,6 +33,7 @@ import com.logotet.totochecker.presentation.ui.check.Event.OnMatchingNumbersSele
 import com.logotet.totochecker.presentation.ui.composables.AppAlertDialog
 import com.logotet.totochecker.presentation.ui.composables.ClickableBall
 import com.logotet.totochecker.presentation.ui.composables.DropdownMenu
+import com.logotet.totochecker.ui.theme.TotoCheckerTheme
 
 @Composable
 fun NumberCheckerScreen(
@@ -93,26 +94,33 @@ fun CheckScreenContent(
                 .weight(1f)
                 .fillMaxWidth()
         ) {
-            DropdownMenu(options = LotteryType.entries, onValueChange = { type ->
-                onAction(Action.OnMenuItemSelected(type))
-            })
+            DropdownMenu(
+                options = LotteryType.entries,
+                onValueChange = { type ->
+                    onAction(Action.OnMenuItemSelected(type))
+                })
 
             key(state.lotteryType) {
                 LazyVerticalGrid(
-                    modifier = modifier.fillMaxWidth(), columns = GridCells.Adaptive(60.dp)
+                    modifier = modifier.fillMaxWidth(), columns = GridCells.Fixed(6),
+                    contentPadding = PaddingValues(12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(20.dp)
                 ) {
                     items(state.numberSequence) { ballValue ->
                         ClickableBall(
                             ballValue = ballValue,
                             shouldBlockClick = isMaxNumbersReached,
-                            onBallSelected = { numberValue ->
-                                onAction(Action.OnNumberSelected(numberValue))
-                                counter++
-                            },
-                            onBallUnselected = { numberValue ->
-                                onAction(Action.OnNumberUnselected(numberValue))
-                                counter--
-                            })
+                            onBallClick = { selected ->
+                                if (selected) {
+                                    onAction(Action.OnNumberSelected(ballValue))
+                                    counter++
+                                } else {
+                                    onAction(Action.OnNumberUnselected(ballValue))
+                                    counter--
+                                }
+                            }
+                        )
                     }
                 }
             }
@@ -136,8 +144,10 @@ fun CheckScreenContent(
     }
 }
 
-@Preview(showSystemUi = true)
+@Preview
 @Composable
 fun CheckScreenContentPreview() {
-    CheckScreenContent(state = CheckScreenState.defaultState, onAction = {})
+    TotoCheckerTheme {
+        CheckScreenContent(state = CheckScreenState.defaultState, onAction = {})
+    }
 }

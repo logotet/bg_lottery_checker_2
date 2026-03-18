@@ -53,7 +53,8 @@ fun BallList(
 
         FlowRow(
             modifier = Modifier.padding(top = 8.dp),
-            horizontalArrangement = Arrangement.Center
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             numbers.forEach { value ->
                 Ball(ballValue = value)

@@ -3,49 +3,41 @@ package com.logotet.totochecker.presentation.ui.composables
 import androidx.compose.foundation.clickable
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import com.logotet.totochecker.R
 
 @Composable
 fun ClickableBall(
     modifier: Modifier = Modifier,
     ballValue: String,
     shouldBlockClick: Boolean,
-    onBallSelected: (String) -> Unit,
-    onBallUnselected: (String) -> Unit
+    selectableBallState: SelectableBallState = SelectableBallState.STANDARD,
+    onBallClick: (Boolean) -> Unit
 ) {
-    var ballBackgroundImageId by remember {
-        mutableIntStateOf(R.drawable.image_white_ball)
+    var ballSelected by remember {
+        mutableStateOf(false)
     }
 
-    val canBallBeUnselected = ballBackgroundImageId == R.drawable.image_selected_ball
-    val ballModifier =
-        if (!shouldBlockClick ||
-            canBallBeUnselected
-        ) {
-            Modifier.clickable {
-                ballBackgroundImageId =
-                    if (ballBackgroundImageId == R.drawable.image_white_ball) {
-                        onBallSelected(ballValue)
-                        R.drawable.image_selected_ball
-                    } else {
-                        onBallUnselected(ballValue)
-                        R.drawable.image_white_ball
-                    }
-            }
-        } else {
-            Modifier
-        }
+    var ballState by remember {
+        mutableStateOf(selectableBallState)
+    }
 
     Ball(
-        modifier = modifier,
-        ballModifier = ballModifier,
+        modifier = modifier
+            .clickable(enabled = !shouldBlockClick || ballSelected) {
+                ballSelected = !ballSelected
+
+                ballState = if(ballSelected){
+                    SelectableBallState.SELECTED
+                } else {
+                    selectableBallState
+                }
+
+                onBallClick(ballSelected)
+            },
         ballValue = ballValue,
-        textColor = if (canBallBeUnselected) Color.White else Color.Black,
-        imageId = ballBackgroundImageId
+        ballState = ballState
     )
 }
