@@ -1,6 +1,5 @@
 package com.logotet.totochecker.presentation.ui.main
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,7 +10,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.logotet.totochecker.R
@@ -21,29 +19,25 @@ import com.logotet.totochecker.presentation.ui.composables.BallList
 @Composable
 fun MainScreen(
     viewModel: MainViewModel,
-    backgroundColor: Color = Color.White
 ) {
     val state = viewModel.screenState
 
     MainScreenContent(
         state = state,
-        onAction = { action -> viewModel.onAction(action) },
-        backgroundColor = backgroundColor
+        onAction = { action -> viewModel.onAction(action) }
     )
 }
 
 @Composable
 fun MainScreenContent(
     state: MainUIState, modifier: Modifier = Modifier,
-    onAction: (Action) -> Unit,
-    backgroundColor: Color
+    onAction: (Action) -> Unit
 ) {
     val scrollableState = rememberScrollState()
 
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(backgroundColor)
             .verticalScroll(scrollableState),
         verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -56,11 +50,6 @@ fun MainScreenContent(
                 )
 
                 BallList(
-                    numbers = state.numbers42,
-                    listHeader = R.string.header_42
-                )
-
-                BallList(
                     numbers = state.numbers35FirstPick,
                     listHeader = R.string.header_35,
                     subHeader = R.string.header_pick_first
@@ -70,6 +59,11 @@ fun MainScreenContent(
                     numbers = state.numbers35SecondPick,
                     listHeader = R.string.header_35,
                     subHeader = R.string.header_pick_second
+                )
+
+                BallList(
+                    numbers = state.numbers42,
+                    listHeader = R.string.header_42
                 )
             }
 
@@ -103,7 +97,6 @@ fun MainScreenPreview() {
             numbers35SecondPick = listOf("1", "2", "3", "4", "5"),
             dataState = DataState.Success
         ),
-        backgroundColor = Color.White,
         onAction = {}
     )
 }
