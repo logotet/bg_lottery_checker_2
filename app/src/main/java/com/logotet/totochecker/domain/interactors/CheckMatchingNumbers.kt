@@ -5,7 +5,6 @@ import com.logotet.totochecker.domain.data.AppError
 import com.logotet.totochecker.domain.data.DataResult
 import com.logotet.totochecker.domain.data.LotteryType
 import com.logotet.totochecker.domain.data.LotteryType.FIVE_35_FIRST
-import com.logotet.totochecker.domain.data.LotteryType.FIVE_35_SECOND
 import com.logotet.totochecker.domain.data.LotteryType.SIX_42
 import com.logotet.totochecker.domain.data.LotteryType.SIX_49
 import com.logotet.totochecker.domain.data.WinningNumbersDataSource
@@ -39,10 +38,8 @@ class CheckMatchingNumbers(
             SIX_49 -> remoteWinningNumbersDataSource.getWinningNumbers49()
             SIX_42 -> remoteWinningNumbersDataSource.getWinningNumbers42()
             FIVE_35_FIRST -> remoteWinningNumbersDataSource.getWinningNumbers35FirstPick()
-            FIVE_35_SECOND -> remoteWinningNumbersDataSource.getWinningNumbers35SecondPick()
         }
 }
-
 
 enum class ValidationError: AppError {
     MISSING_NUMBER,
